@@ -38,6 +38,11 @@
 
                     <h1>All users</h1>
 
+                    <?php
+                        $premiereLettre ="e".'%';
+                        $statusID = 1;
+                    ?>
+
                     <!-- Création du tableau -->
                     <table class="table table-bordered table-striped"> 
                         <tr>
@@ -47,13 +52,17 @@
                             <th>Status</th>
 
                             <?php
-                                $stmt = $pdo->query('SELECT users.id AS id, username, email, name
-                                                    FROM users
-                                                    JOIN status
-                                                    ON users.status_id = status.id');
+                                $stmt = $pdo->query("SELECT users.id AS id, username, email, name, status_id
+                                                     FROM users
+                                                     JOIN status
+                                                     ON users.status_id = status.id
+                                                     WHERE username LIKE '$premiereLettre'
+                                                     AND status_id = $statusID");
+ 
 
                                 // écriture des lignes du tableau
                                 while ($row = $stmt->fetch()) {
+
                                     echo "<tr>";
                                     echo "<td>".$row['id']."</td>";
                                     echo "<td>".$row['username']."</td>";
