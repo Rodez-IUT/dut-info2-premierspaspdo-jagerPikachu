@@ -37,10 +37,26 @@
                 <div class="col-xs-12">
 
                     <h1>All users</h1>
+                    <form method='GET' action='#'>
+                        <label>Start with letter : </label>
+                        <input type='text' name='premLettre' />
+                        <label> and status is : </label>
+                        <select name='status'>
+                            <option>Active account</option>
+                            <option>Waiting for account validation</option>
+                        </select>
+                        <input type='submit' value='OK' />
+                    </form>
 
                     <?php
-                        $premiereLettre ="e".'%';
-                        $statusID = 1;
+                         
+                        if (isset($_GET['premLetter'])) {
+                            $premiereLette = $_GET['premLetter'].'%';
+                        } else {
+                            $premiereLettre = '%';
+                        }        
+                                        
+                        //$statusID = $_GET['status'];
                     ?>
 
                     <!-- Création du tableau -->
