@@ -10,7 +10,7 @@
             $host = 'localhost';
             $db = 'my_activities';
             $user = 'root';
-            $pass = 'root';
+            $pass = '';
             $charset = 'utf8';
 
             $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
@@ -39,7 +39,7 @@
                     <h1>All users</h1>
 
                     <!-- Création du tableau -->
-                    <table> 
+                    <table class="table table-bordered table-striped"> 
                         <tr>
                             <th>Id</th>
                             <th>Username</th>
