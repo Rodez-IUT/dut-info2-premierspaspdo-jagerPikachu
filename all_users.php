@@ -1,18 +1,17 @@
 <!DOCTYPE html>
-
+<html>
     <head>
+	    <link href="css/bootstrap.css" rel="stylesheet"/>
         <meta charset="utf-8" />
-        <link href="css/bootstrap.css" rel="stylesheet" />
-        <title>Affichage users</title>
+        <title>Activite 2</title>
 
-        <!-- Connexion à la base de donées -->
         <?php
+
             $host = 'localhost';
-            $db = 'my_activities';
+            $db   = 'my_activities';
             $user = 'root';
             $pass = '';
             $charset = 'utf8';
-
             $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
 
             $options = [
@@ -24,10 +23,10 @@
             try {
                 $pdo = new PDO($dsn, $user, $pass, $options);
             } catch (PDOException $e) {
+                echo $e->getMessage();
                 throw new PDOException($e->getMessage(), (int)$e->getCode());
             }
         ?>
-
     </head>
 
     <body>
@@ -36,63 +35,74 @@
             <div class="row">
                 <div class="col-xs-12">
 
-                    <h1>All users</h1>
-                    <form method='GET' action='#'>
-                        <label>Start with letter : </label>
-                        <input type='text' name='premLettre' />
-                        <label> and status is : </label>
-                        <select name='status'>
-                            <option>Active account</option>
-                            <option>Waiting for account validation</option>
+                    <h1>All Users</h1>
+
+
+                    <form action="all_users.php" method="get">
+
+                        <!-- selection de la lettre -->
+                        <label>Start with letter </label>
+                        <input type="text" name="letter" <?php if(isset($_GET['letter'])){echo "value='".$_GET['letter']."' ";}?>/>
+                        
+                        <!-- selection du statut -->
+                        <label>And status is </label>
+                        <select name="status">
+                            <option value="1" <?php if(isset($_GET['letter']) && $_GET['status']){echo "selected";}?>>Waiting for account validation</option>
+                            <option value="2" <?php if(isset($_GET['letter']) && $_GET['status']){echo "selected";}?>>Active account</option>
                         </select>
-                        <input type='submit' value='OK' />
+                        
+                        <!-- bouton ok-->
+                        <input type="submit" value="OK" /><br />
                     </form>
 
-                    <?php
-                         
-                        if (isset($_GET['premLetter'])) {
-                            $premiereLette = $_GET['premLetter'].'%';
-                        } else {
-                            $premiereLettre = '%';
-                        }        
-                                        
-                        //$statusID = $_GET['status'];
-                    ?>
 
-                    <!-- Création du tableau -->
-                    <table class="table table-bordered table-striped"> 
-                        <tr>
-                            <th>Id</th>
-                            <th>Username</th>
-                            <th>Email</th>
-                            <th>Status</th>
+                    <table class="table table-bordered table-striped">
 
-                            <?php
-                                $stmt = $pdo->query("SELECT users.id AS id, username, email, name, status_id
-                                                     FROM users
-                                                     JOIN status
-                                                     ON users.status_id = status.id
-                                                     WHERE username LIKE '$premiereLettre'
-                                                     AND status_id = $statusID");
- 
+                        <?php
 
-                                // écriture des lignes du tableau
+                            if (isset($_GET['letter'])) {     // le formulaire à été envoyé
+
+                                echo "<tr>";
+                                    echo "<th>Id</th>";
+                                    echo "<th>Username</th>";
+                                    echo "<th>Email</th>";
+                                    echo "<th>Status</th>";
+                                echo "<tr>";
+
+                                // on récupère les valeurs du formulaire
+                                $status_id = $_GET['status'];
+                                $lettreDebut = $_GET['letter'];
+
+
+                                $stmt = $pdo->query('SELECT users.id AS id, username, email, name
+                                                    FROM users
+                                                    JOIN status
+                                                    ON users.status_id = status.id
+                                                    WHERE status_id = '.$status_id.'
+                                                    AND username LIKE \''.$lettreDebut.'%'.'\'');
+
                                 while ($row = $stmt->fetch()) {
-
                                     echo "<tr>";
-                                    echo "<td>".$row['id']."</td>";
-                                    echo "<td>".$row['username']."</td>";
-                                    echo "<td>".$row['email']."</td>";
-                                    echo "<td>".$row['name']."</td>";
+                                        echo "<td>".$row['id']."</td>";
+                                        echo "<td>".$row['username']."</td>";
+                                        echo "<td>".$row['email']."</td>";
+                                        echo "<td>".$row['name']."</td>";
                                     echo "</tr>";
                                 }
-                            ?>
-                        <tr>
-                    </table>
 
-                </div>    
+                                
+
+                            }
+
+                        ?>
+
+                    </table>			
+
+                </div>
+
             </div>
-        </div>                        
-    </body>
 
+        </div>
+
+    </body>
 </html>
